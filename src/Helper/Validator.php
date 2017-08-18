@@ -9,6 +9,7 @@
 namespace PaymentGateway\VPosGaranti\Helper;
 
 
+use PaymentGateway\VPosGaranti\Constant\Currency;
 use PaymentGateway\VPosGaranti\Constant\RequestType;
 use PaymentGateway\VPosGaranti\Constant\StoreType;
 use PaymentGateway\VPosGaranti\Exception\ValidationException;
@@ -78,6 +79,54 @@ class Validator
     {
         if (!is_string($value) || !in_array(strlen($value), array(3, 4))) {
             throw new ValidationException('Invalid Cvv', 'INVALID_CVV');
+        }
+    }
+
+    public static function validateIp($value)
+    {
+        if (!filter_var($value, FILTER_VALIDATE_IP)) {
+            throw new ValidationException('Invalid Ip', 'INVALID_IP');
+        }
+    }
+
+    public static function validateEmail($value)
+    {
+        if (!filter_var($value, FILTER_VALIDATE_EMAIL)) {
+            throw new ValidationException('Invalid Email', 'INVALID_EMAIL');
+        }
+    }
+
+    public static function validateAmount($value)
+    {
+        if (!is_numeric($value) || $value <= 0) {
+            throw new ValidationException('Invalid Amount', 'INVALID_AMOUNT');
+        }
+    }
+
+    public static function validateInstallment($value)
+    {
+        if (empty($value) || !is_int($value)) {
+            throw new ValidationException('Invalid Installment', 'INVALID_INSTALLMENT');
+        }
+    }
+
+    public static function validateOrderId($value)
+    {
+        if (empty($value)) {
+            throw new ValidationException('Invalid Order Id', 'INVALID_ORDER_ID');
+        }
+    }
+
+    public static function validateCurrency($value)
+    {
+        if (!$value instanceof \PaymentGateway\ISO4217\Model\Currency) {
+            throw new ValidationException('Invalid Currency Type', 'INVALID_CURRENCY_TYPE');
+        }
+
+        $alpha3 = $value->getAlpha3();
+
+        if (!in_array($alpha3, Helper::getConstants(Currency::class))) {
+            throw new ValidationException('Invalid Currency', 'INVALID_CURRENCY');
         }
     }
 }
