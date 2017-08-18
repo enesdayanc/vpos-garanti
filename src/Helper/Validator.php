@@ -98,7 +98,7 @@ class Validator
 
     public static function validateAmount($value)
     {
-        if (!is_numeric($value) || $value <= 0) {
+        if (!is_numeric($value) || $value <= 0 || strpos(strval($value), '.') !== false) {
             throw new ValidationException('Invalid Amount', 'INVALID_AMOUNT');
         }
     }
@@ -107,6 +107,13 @@ class Validator
     {
         if (empty($value) || !is_int($value)) {
             throw new ValidationException('Invalid Installment', 'INVALID_INSTALLMENT');
+        }
+    }
+
+    public static function validateUserId($value)
+    {
+        if (empty($value)) {
+            throw new ValidationException('Invalid User Id', 'INVALID_USER_ID');
         }
     }
 

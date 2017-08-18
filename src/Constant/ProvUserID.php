@@ -3,14 +3,14 @@
  * Created by PhpStorm.
  * User: enesdayanc
  * Date: 18/08/2017
- * Time: 11:24
+ * Time: 14:17
  */
 
 namespace PaymentGateway\VPosGaranti\Constant;
 
 
-class RequestVersion
+class ProvUserID
 {
-    const ZERO_ZERO_ONE = 'v0.01';
-    const ZERO_ONE = 'v0.1';
+    const PROVAUT = 'PROVAUT';
+    const PROVRFN = 'PROVRFN';
 }

@@ -117,9 +117,9 @@ class Card
         $this->lastName = $lastName;
     }
 
-    public function getExpires()
+    public function getExpireDate()
     {
-        return $this->getExpiryYear() . $this->getExpiryMonth();
+        return $this->getExpiryMonth() . $this->getExpiryYear();
     }
 
     public function validate()

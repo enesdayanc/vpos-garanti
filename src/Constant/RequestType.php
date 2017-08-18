@@ -11,5 +11,9 @@ namespace PaymentGateway\VPosGaranti\Constant;
 
 class RequestType
 {
-    const AUTH = 'Auth';
+    const PRE_AUTH = 'preauth';
+    const POST_AUTH = 'postauth';
+    const AUTH = 'sales';
+    const VOID = 'void';
+    const REFUND = 'refund';
 }

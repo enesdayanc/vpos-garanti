@@ -66,9 +66,4 @@ class GarantiBankasiTest extends Setting
     {
         return 'https://' . $this->host . '/VPServlet';
     }
-
-    public function getMode()
-    {
-        return RequestMode::TEST;
-    }
 }

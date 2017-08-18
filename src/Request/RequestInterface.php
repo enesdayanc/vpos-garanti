@@ -10,10 +10,15 @@ namespace PaymentGateway\VPosGaranti\Request;
 
 
 use PaymentGateway\VPosGaranti\Setting\Credential;
+use PaymentGateway\VPosGaranti\Setting\Setting;
 
 interface RequestInterface
 {
     public function getType();
+
     public function validate();
-    public function toXmlString(Credential $credential);
+
+    public function toXmlString(Setting $setting);
+
+    public function getHashData(Setting $setting);
 }
