@@ -10,5 +10,6 @@ namespace PaymentGateway\VPosGaranti\Constant;
 
 class RequestMode
 {
+    const TEST = 'TEST';
     const PROD = 'PROD';
 }

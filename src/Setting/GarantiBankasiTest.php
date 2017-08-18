@@ -9,6 +9,7 @@
 namespace PaymentGateway\VPosGaranti\Setting;
 
 
+use PaymentGateway\VPosGaranti\Constant\RequestMode;
 use PaymentGateway\VPosGaranti\Constant\StoreType;
 use PaymentGateway\VPosGaranti\Exception\NotFoundException;
 
@@ -64,5 +65,10 @@ class GarantiBankasiTest extends Setting
     public function getVoidUrl()
     {
         return 'https://' . $this->host . '/VPServlet';
+    }
+
+    public function getMode()
+    {
+        return RequestMode::TEST;
     }
 }

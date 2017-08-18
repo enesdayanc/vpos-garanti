@@ -111,4 +111,6 @@ abstract class Setting
     public abstract function getRefundUrl();
 
     public abstract function getVoidUrl();
+
+    public abstract function getMode();
 }
