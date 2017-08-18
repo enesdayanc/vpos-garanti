@@ -9,6 +9,7 @@
 namespace PaymentGateway\VPosGaranti\Helper;
 
 
+use PaymentGateway\VPosGaranti\Constant\StoreType;
 use PaymentGateway\VPosGaranti\Exception\ValidationException;
 
 class Validator
@@ -17,6 +18,13 @@ class Validator
     {
         if (empty($value)) {
             throw new ValidationException("Invalid $name", "INVALID_$name");
+        }
+    }
+
+    public static function validateStoreType($value)
+    {
+        if (!in_array($value, Helper::getConstants(StoreType::class))) {
+            throw new ValidationException('Invalid Store Type', 'INVALID_STORE_TYPE');
         }
     }
 }
