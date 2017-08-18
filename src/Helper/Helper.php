@@ -10,6 +10,7 @@ namespace PaymentGateway\VPosGaranti\Helper;
 
 
 use ReflectionClass;
+use Spatie\ArrayToXml\ArrayToXml;
 
 class Helper
 {
@@ -17,5 +18,10 @@ class Helper
     {
         $oClass = new ReflectionClass ($class);
         return $oClass->getConstants();
+    }
+
+    public static function arrayToXmlString(array $array)
+    {
+        return ArrayToXml::convert($array, 'CC5Request');
     }
 }
