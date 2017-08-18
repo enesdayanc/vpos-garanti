@@ -11,7 +11,7 @@
     }
   ],
   "require": {
-    "php": ">=5.5",
+    "php": ">=7.0",
     "guzzlehttp/guzzle": "~6.0",
     "spatie/array-to-xml": "^2.5",
     "enesdayanc/iso4217": "^3.0"
