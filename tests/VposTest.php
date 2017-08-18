@@ -6,7 +6,7 @@
  * Time: 10:29
  */
 
-namespace PaymentGateway\VPosEst;
+namespace PaymentGateway\VPosGaranti;
 
 use PHPUnit\Framework\TestCase;
 
