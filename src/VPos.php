@@ -8,6 +8,7 @@
 
 namespace PaymentGateway\VPosGaranti;
 
+use PaymentGateway\VPosGaranti\Model\ThreeDResponse;
 use PaymentGateway\VPosGaranti\Request\AuthorizeRequest;
 use PaymentGateway\VPosGaranti\Request\CaptureRequest;
 use PaymentGateway\VPosGaranti\Request\PurchaseRequest;
@@ -53,6 +54,34 @@ class VPos
         return $this->send($voidRequest, $this->setting->getVoidUrl());
     }
 
+    public function authorize3D(AuthorizeRequest $authorizeRequest)
+    {
+
+        $redirectForm = $authorizeRequest->get3DRedirectForm($this->setting);
+
+        $response = new Response();
+
+        $response->setIsRedirect(true);
+        $response->setRedirectMethod($redirectForm->getMethod());
+        $response->setRedirectUrl($redirectForm->getAction());
+        $response->setRedirectData($redirectForm->getParameters());
+
+        return $response;
+    }
+
+    public function purchase3D(PurchaseRequest $purchaseRequest)
+    {
+        $redirectForm = $purchaseRequest->get3DRedirectForm($this->setting);
+
+        $response = new Response();
+
+        $response->setIsRedirect(true);
+        $response->setRedirectMethod($redirectForm->getMethod());
+        $response->setRedirectUrl($redirectForm->getAction());
+        $response->setRedirectData($redirectForm->getParameters());
+
+        return $response;
+    }
 
     /**
      * @param RequestInterface $requestElements
@@ -64,5 +93,10 @@ class VPos
         $httpClient = new HttpClient($this->setting);
 
         return $httpClient->send($requestElements, $url);
+    }
+
+    public function handle3DResponse(ThreeDResponse $threeDResponse)
+    {
+        return $threeDResponse->getResponseClass($this->setting);
     }
 }

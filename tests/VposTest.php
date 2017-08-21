@@ -28,6 +28,8 @@ class VposTest extends TestCase
     protected $vPos;
     /** @var  Card $card */
     protected $card;
+    /** @var  Card $threeDCard */
+    protected $threeDCard;
     /** @var  Currency $currency */
     protected $currency;
 
@@ -58,11 +60,21 @@ class VposTest extends TestCase
 
         $this->card = $card;
 
+        $threeDCard = new Card();
+        $threeDCard->setCreditCardNumber("4282209004348015");
+        $threeDCard->setExpiryMonth('07');
+        $threeDCard->setExpiryYear('19');
+        $threeDCard->setCvv('123');
+        $threeDCard->setFirstName('Enes');
+        $threeDCard->setLastName('Dayanç');
+
+        $this->threeDCard = $threeDCard;
+
         $iso4217 = new ISO4217();
 
         $this->currency = $iso4217->getByCode('TRY');
 
-        $this->amount = 13;
+        $this->amount = rand(1, 1000);
         $this->orderId = 'MO' . md5(microtime() . rand());
         $this->userId = md5(microtime() . rand());
         $this->installment = rand(1, 6);
@@ -320,5 +332,45 @@ class VposTest extends TestCase
         $this->assertSame('0210', $response->getErrorCode());
     }
 
+    public function test3DAuthorizeFormCreate()
+    {
+        $authorizeRequest = new AuthorizeRequest();
 
+        $authorizeRequest->setCard($this->threeDCard);
+        $authorizeRequest->setOrderId($this->orderId);
+        $authorizeRequest->setAmount($this->amount);
+        $authorizeRequest->setCurrency($this->currency);
+        $authorizeRequest->setUserId($this->userId);
+        $authorizeRequest->setInstallment($this->installment);
+        $authorizeRequest->setIp('198.168.1.1');
+        $authorizeRequest->setEmail('enes.dayanc@modanisa.com.tr');
+
+        $response = $this->vPos->authorize3D($authorizeRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertTrue($response->isRedirect());
+        $this->assertInternalType('array', $response->getRedirectData());
+    }
+
+    public function test3DPurchaseFormCreate()
+    {
+        $purchaseRequest = new PurchaseRequest();
+
+        $purchaseRequest->setCard($this->threeDCard);
+        $purchaseRequest->setOrderId($this->orderId);
+        $purchaseRequest->setAmount($this->amount);
+        $purchaseRequest->setCurrency($this->currency);
+        $purchaseRequest->setUserId($this->userId);
+        $purchaseRequest->setInstallment($this->installment);
+        $purchaseRequest->setIp('198.168.1.1');
+        $purchaseRequest->setEmail('enes.dayanc@modanisa.com.tr');
+
+        $response = $this->vPos->purchase3D($purchaseRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertTrue($response->isRedirect());
+        $this->assertInternalType('array', $response->getRedirectData());
+    }
 }

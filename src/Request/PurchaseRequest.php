@@ -13,12 +13,14 @@ use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosGaranti\Constant\CardholderPresentCode;
 use PaymentGateway\VPosGaranti\Constant\MotoInd;
 use PaymentGateway\VPosGaranti\Constant\ProvUserID;
+use PaymentGateway\VPosGaranti\Constant\RedirectFormMethod;
 use PaymentGateway\VPosGaranti\Constant\RequestMode;
 use PaymentGateway\VPosGaranti\Constant\RequestType;
 use PaymentGateway\VPosGaranti\Constant\RequestVersion;
 use PaymentGateway\VPosGaranti\Helper\Helper;
 use PaymentGateway\VPosGaranti\Helper\Validator;
 use PaymentGateway\VPosGaranti\Model\Card;
+use PaymentGateway\VPosGaranti\Model\RedirectForm;
 use PaymentGateway\VPosGaranti\Setting\Credential;
 use PaymentGateway\VPosGaranti\Setting\Setting;
 
@@ -267,5 +269,54 @@ class PurchaseRequest implements RequestInterface
             $credential->getProvisionPassword(),
             $credential->getTerminalId()
         );
+    }
+
+    public function get3DRedirectForm(Setting $setting)
+    {
+        $this->validate();
+
+        $credential = $setting->getCredential();
+
+        $card = $this->getCard();
+
+        Validator::validateNotEmpty('storeKey', $credential->getStoreKey());
+
+        $params = array(
+            "secure3dsecuritylevel" => $setting->getStoreType(),
+            "cardnumber" => $card->getCreditCardNumber(),
+            "cardexpiredatemonth" => $card->getExpiryMonth(),
+            "cardexpiredateyear" => $card->getExpiryYear(),
+            "cardcvv2" => $card->getCvv(),
+            "mode" => RequestMode::PROD,
+            "apiversion" => RequestVersion::ZERO_ZERO_ONE,
+            "terminalprovuserid" => ProvUserID::PROVAUT,
+            "terminaluserid" => $this->getUserId(),
+            "terminalmerchantid" => $credential->getMerchantId(),
+            "txntype" => $this->getType(),
+            "txnamount" => Helper::amountParser($this->getAmount()),
+            "txncurrencycode" => $this->getCurrency()->getNumeric(),
+            "txninstallmentcount" => $this->getInstallment(),
+            "orderid" => $this->getOrderId(),
+            "terminalid" => $credential->getTerminalId(),
+            "successurl" => $setting->getThreeDSuccessUrl(),
+            "errorurl" => $setting->getThreeDFailUrl(),
+            "customeremailaddress" => $this->getEmail(),
+            "customeripaddress" => $this->getIp(),
+            "secure3dhash" => $this->getHashDataFor3D($setting),
+        );
+
+        $redirectForm = new RedirectForm();
+        $redirectForm->setAction($setting->getThreeDPostUrl());
+        $redirectForm->setMethod(RedirectFormMethod::POST);
+        $redirectForm->setParameters($params);
+
+        return $redirectForm;
+    }
+
+    public function getHashDataFor3D(Setting $setting)
+    {
+        $this->validate();
+
+        return Helper::get3DCryptedHash($setting, $this->getOrderId(), $this->getAmount(), $this->getType(), $this->getInstallment());
     }
 }

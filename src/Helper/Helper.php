@@ -13,6 +13,7 @@ use Exception;
 use PaymentGateway\VPosGaranti\Constant\Success;
 use PaymentGateway\VPosGaranti\Exception\ValidationException;
 use PaymentGateway\VPosGaranti\Response\Response;
+use PaymentGateway\VPosGaranti\Setting\Setting;
 use ReflectionClass;
 use SimpleXMLElement;
 use Spatie\ArrayToXml\ArrayToXml;
@@ -94,5 +95,27 @@ class Helper
     public static function amountParser($amount)
     {
         return (int)number_format($amount, 2, '', '');
+    }
+
+    public static function get3DCryptedHash(Setting $setting, $orderId, $amount, $type, $installment)
+    {
+        $setting->validate();
+
+        $credential = $setting->getCredential();
+
+        return self::getHashData(
+            array(
+                $credential->getTerminalId(),
+                $orderId,
+                Helper::amountParser($amount),
+                $setting->getThreeDSuccessUrl(),
+                $setting->getThreeDFailUrl(),
+                $type,
+                $installment,
+                $credential->getStoreKey(),
+            ),
+            $credential->getProvisionPassword(),
+            $credential->getTerminalId()
+        );
     }
 }
