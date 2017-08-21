@@ -9,6 +9,7 @@
 namespace PaymentGateway\VPosGaranti\Request;
 
 
+use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosGaranti\Constant\ProvUserID;
 use PaymentGateway\VPosGaranti\Constant\RequestMode;
 use PaymentGateway\VPosGaranti\Constant\RequestType;
@@ -25,6 +26,8 @@ class VoidRequest implements RequestInterface
     private $userId;
     private $ip;
     private $transactionReference;
+    /** @var  Currency */
+    private $currency;
 
     public function __construct()
     {
@@ -124,6 +127,7 @@ class VoidRequest implements RequestInterface
         Validator::validateIp($this->getIp());
         Validator::validateOrderId($this->getOrderId());
         Validator::validateUserId($this->getUserId());
+        Validator::validateAmount($this->getAmount());
         Validator::validateNotEmpty('Transaction Reference', $this->getTransactionReference());
     }
 
@@ -135,7 +139,7 @@ class VoidRequest implements RequestInterface
 
         $elements = array(
             "Mode" => RequestMode::PROD,
-            "Version" => RequestVersion::ZERO_ONE,
+            "Version" => RequestVersion::ZERO_ZERO_ONE,
             "Terminal" => array(
                 "ProvUserID" => ProvUserID::PROVRFN,
                 "HashData" => $this->getHashData($setting),
@@ -151,7 +155,8 @@ class VoidRequest implements RequestInterface
             ),
             "Transaction" => array(
                 "Type" => $this->getType(),
-                "OriginalRetrefNum" => $this->getTransactionReference(),
+                "Amount" => Helper::amountParser($this->getAmount()),
+                "OriginalRetrefNum" => $this->getTransactionReference()
             ),
         );
 
@@ -168,6 +173,7 @@ class VoidRequest implements RequestInterface
             array(
                 $this->getOrderId(),
                 $credential->getTerminalId(),
+                Helper::amountParser($this->getAmount()),
             ),
             $credential->getProvisionPassword(),
             $credential->getTerminalId()

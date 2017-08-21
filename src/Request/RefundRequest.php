@@ -172,7 +172,7 @@ class RefundRequest implements RequestInterface
             ),
             "Transaction" => array(
                 "Type" => $this->getType(),
-                "Amount" => $this->getAmount(),
+                "Amount" => Helper::amountParser($this->getAmount()),
                 "OriginalRetrefNum" => $this->getTransactionReference(),
                 "CurrencyCode" => $this->getCurrency()->getNumeric()
             ),
@@ -191,7 +191,7 @@ class RefundRequest implements RequestInterface
             array(
                 $this->getOrderId(),
                 $credential->getTerminalId(),
-                $this->getAmount(),
+                Helper::amountParser($this->getAmount()),
             ),
             $credential->getProvisionPassword(),
             $credential->getTerminalId()

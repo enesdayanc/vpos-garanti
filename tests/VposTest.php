@@ -36,7 +36,7 @@ class VposTest extends TestCase
     protected $amount;
     protected $userId;
     protected $installment;
-
+    protected $userIp;
 
     public function setUp()
     {
@@ -62,10 +62,11 @@ class VposTest extends TestCase
 
         $this->currency = $iso4217->getByCode('TRY');
 
-        $this->amount = rand(1, 1000);
+        $this->amount = 13;
         $this->orderId = 'MO' . md5(microtime() . rand());
         $this->userId = md5(microtime() . rand());
         $this->installment = rand(1, 6);
+        $this->userIp = '192.168.1.1';
 
     }
 
@@ -96,7 +97,35 @@ class VposTest extends TestCase
         );
     }
 
-    public function testPurchaseFail()
+    public function testPurchaseForVoid()
+    {
+        $purchaseRequest = new PurchaseRequest();
+
+        $purchaseRequest->setCard($this->card);
+        $purchaseRequest->setOrderId($this->orderId);
+        $purchaseRequest->setAmount($this->amount);
+        $purchaseRequest->setCurrency($this->currency);
+        $purchaseRequest->setUserId($this->userId);
+        $purchaseRequest->setInstallment($this->installment);
+        $purchaseRequest->setIp('198.168.1.1');
+        $purchaseRequest->setEmail('enes.dayanc@modanisa.com.tr');
+
+        $response = $this->vPos->purchase($purchaseRequest);
+
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertTrue($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+
+        return array(
+            'orderId' => $this->orderId,
+            'amount' => $this->amount,
+            'userId' => $this->userId,
+            'refNumber' => $response->getTransactionReference(),
+        );
+    }
+
+    public function testPurchaseFailAmount()
     {
         $this->expectException(ValidationException::class);
         $this->expectExceptionMessage('Invalid Amount');
@@ -197,7 +226,7 @@ class VposTest extends TestCase
         $captureRequest->setAmount($params['amount']);
         $captureRequest->setCurrency($this->currency);
         $captureRequest->setUserId($params['userId']);
-        $captureRequest->setIp('192.168.1.1');
+        $captureRequest->setIp($this->userIp);
 
         $response = $this->vPos->capture($captureRequest);
 
@@ -215,7 +244,7 @@ class VposTest extends TestCase
         $captureRequest->setAmount($this->amount);
         $captureRequest->setCurrency($this->currency);
         $captureRequest->setUserId(1);
-        $captureRequest->setIp('192.168.1.1');
+        $captureRequest->setIp($this->userIp);
 
         $response = $this->vPos->capture($captureRequest);
 
@@ -224,7 +253,6 @@ class VposTest extends TestCase
         $this->assertFalse($response->isRedirect());
         $this->assertSame('0205', $response->getErrorCode());
     }
-
 
 
     /**
@@ -237,7 +265,7 @@ class VposTest extends TestCase
         $refundRequest->setCurrency($this->currency);
         $refundRequest->setAmount($params['amount'] / 2);
         $refundRequest->setOrderId($params['orderId']);
-        $refundRequest->setIp('192.168.1.1');
+        $refundRequest->setIp($this->userIp);
         $refundRequest->setUserId($params['userId']);
         $refundRequest->setTransactionReference($params['refNumber']);
 
@@ -252,14 +280,15 @@ class VposTest extends TestCase
 
 
     /**
-     * @depends testPurchase
+     * @depends testPurchaseForVoid
      * @param $params
      */
-    /*public function testVoid($params)
+    public function testVoid($params)
     {
         $voidRequest = new VoidRequest();
+        $voidRequest->setAmount($params['amount']);
         $voidRequest->setOrderId($params['orderId']);
-        $voidRequest->setIp('192.168.1.1');
+        $voidRequest->setIp($this->userIp);
         $voidRequest->setUserId($params['userId']);
         $voidRequest->setTransactionReference($params['refNumber']);
 
@@ -268,7 +297,28 @@ class VposTest extends TestCase
         $this->assertInstanceOf(Response::class, $response);
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-    }*/
+    }
+
+    /**
+     * @depends testPurchaseForVoid
+     * @param $params
+     */
+    public function testVoidFail($params)
+    {
+        $voidRequest = new VoidRequest();
+        $voidRequest->setAmount($params['amount']);
+        $voidRequest->setOrderId($params['orderId']);
+        $voidRequest->setIp($this->userIp);
+        $voidRequest->setUserId($params['userId']);
+        $voidRequest->setTransactionReference($params['refNumber']);
+
+        $response = $this->vPos->void($voidRequest);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('0210', $response->getErrorCode());
+    }
 
 
 }

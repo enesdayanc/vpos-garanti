@@ -241,11 +241,10 @@ class PurchaseRequest implements RequestInterface
             ),
             "Transaction" => array(
                 "Type" => $this->getType(),
-                "Amount" => $this->getAmount(),
+                "Amount" => Helper::amountParser($this->getAmount()),
                 "InstallmentCnt" => $this->getInstallment(),
                 "CurrencyCode" => $this->getCurrency()->getNumeric(),
                 "CardholderPresentCode" => CardholderPresentCode::NORMAL,
-                "MotoInd" => $this->isMailOrder() ? MotoInd::MAIL_ORDER : MotoInd::E_COMMERCE,
             ),
         );
 
@@ -263,7 +262,7 @@ class PurchaseRequest implements RequestInterface
                 $this->getOrderId(),
                 $credential->getTerminalId(),
                 $this->getCard()->getCreditCardNumber(),
-                $this->getAmount(),
+                Helper::amountParser($this->getAmount()),
             ),
             $credential->getProvisionPassword(),
             $credential->getTerminalId()
