@@ -98,7 +98,7 @@ class Validator
 
     public static function validateAmount($value)
     {
-        if (!is_numeric($value) || $value <= 0 || strpos(strval($value), '.') !== false) {
+        if (!is_numeric($value) || $value <= 0 || strpos(strval($value), ',') !== false) {
             throw new ValidationException('Invalid Amount', 'INVALID_AMOUNT');
         }
     }
