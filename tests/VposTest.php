@@ -13,6 +13,7 @@ use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosGaranti\Constant\StoreType;
 use PaymentGateway\VPosGaranti\Exception\ValidationException;
 use PaymentGateway\VPosGaranti\Model\Card;
+use PaymentGateway\VPosGaranti\Model\ThreeDResponse;
 use PaymentGateway\VPosGaranti\Request\AuthorizeRequest;
 use PaymentGateway\VPosGaranti\Request\CaptureRequest;
 use PaymentGateway\VPosGaranti\Request\PurchaseRequest;
@@ -372,5 +373,44 @@ class VposTest extends TestCase
         $this->assertFalse($response->isSuccessful());
         $this->assertTrue($response->isRedirect());
         $this->assertInternalType('array', $response->getRedirectData());
+    }
+
+    public function test3DResponseHandleSignatureFail()
+    {
+
+        $iso4217 = new ISO4217();
+
+        $threeDResponse = new ThreeDResponse();
+
+        $threeDResponse->setTransId('MOd9edcf9207c65a1f587748445060e774');
+        $threeDResponse->setClientId('30691297');
+        $threeDResponse->setOrderId('MOd9edcf9207c65a1f587748445060e774');
+        $threeDResponse->setAuthCode('');
+        $threeDResponse->setProcReturnCode('');
+        $threeDResponse->setResponse('');
+        $threeDResponse->setMdStatus('1');
+        $threeDResponse->setCavv('jCm0m+u/0hUfAREHBAMBcfN+pSo=');
+        $threeDResponse->setEci('02');
+        $threeDResponse->setMd('1i9hORO4ozU+3RJv2fyoP00zslosUN1hMF4tHWxYIS1O3f6PtLZOGLfbVuEDZIvKOUVzLURVSo96QEG1hUsj+3U+kCUuh8sUcEfrQznQ+sl8BnNjSYRaSkqY4x63+GrryJqVgta2xwFhKJUQQG7+mIYayYL/7sbRK3qkfZYt8ekhUkSDBD+VjQ==');
+        $threeDResponse->setRnd('zLxb4t9zCzbh1hFFC2cq');
+        $threeDResponse->setHash('DIRTY_HASH');
+        $threeDResponse->setHashParams('clientid:oid:authcode:procreturncode:response:mdstatus:cavv:eci:md:rnd:');
+        $threeDResponse->setHashParamsVal('30691297MOd9edcf9207c65a1f587748445060e7741jCm0m+u/0hUfAREHBAMBcfN+pSo=021i9hORO4ozU+3RJv2fyoP00zslosUN1hMF4tHWxYIS1O3f6PtLZOGLfbVuEDZIvKOUVzLURVSo96QEG1hUsj+3U+kCUuh8sUcEfrQznQ+sl8BnNjSYRaSkqY4x63+GrryJqVgta2xwFhKJUQQG7+mIYayYL/7sbRK3qkfZYt8ekhUkSDBD+VjQ==zLxb4t9zCzbh1hFFC2cq');
+        $threeDResponse->setUserIp('198.168.1.1');
+        $threeDResponse->setUserEmail('enes.dayanc@modanisa.com.tr');
+        $threeDResponse->setType('sales');
+        $threeDResponse->setAmount(9300);
+        $threeDResponse->setInstallment(1);
+        $threeDResponse->setCurrency($iso4217->getByCode('949'));
+        $threeDResponse->setXid('RszfrwEYe/8xb7rnrPuh6C9pZSQ=');
+        $threeDResponse->setVersion('2.0');
+        $threeDResponse->setUserId('0a5bfc66175d43b15e6c8a81bc0ca89d');
+
+        $response = $this->vPos->handle3DResponse($threeDResponse);
+
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertFalse($response->isSuccessful());
+        $this->assertFalse($response->isRedirect());
+        $this->assertSame('Invalid Signature', $response->getErrorMessage());
     }
 }
