@@ -75,10 +75,10 @@ class VposTest extends TestCase
 
         $this->currency = $iso4217->getByCode('TRY');
 
-        $this->amount = rand(1, 1000);
+        $this->amount = rand(1, 100);
         $this->orderId = 'MO' . md5(microtime() . rand());
         $this->userId = md5(microtime() . rand());
-        $this->installment = rand(1, 6);
+        $this->installment = rand(1, 3);
         $this->userIp = '192.168.1.1';
 
     }
