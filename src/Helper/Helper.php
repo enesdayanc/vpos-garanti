@@ -69,7 +69,7 @@ class Helper
 
         if (!empty($data->Transaction->Response->ReasonCode)
             && $data->Transaction->Response->ReasonCode == Success::RESPONSE_CODE) {
-            $response->setIsSuccessful(true);
+            $response->setSuccessful(true);
         }
 
         if (!empty($data->Transaction->AuthCode)) {
