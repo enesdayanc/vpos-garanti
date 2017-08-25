@@ -55,11 +55,12 @@ class Helper
         return strtoupper(sha1($dataString));
     }
 
-    public static function getResponseByXML($xml)
+    public static function getResponseByXML($xml, $requestRawData)
     {
         $response = new Response();
 
         $response->setRawData($xml);
+        $response->setRequestRawData($requestRawData);
 
         try {
             $data = new SimpleXMLElement($xml);
