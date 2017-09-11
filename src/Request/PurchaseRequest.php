@@ -211,7 +211,7 @@ class PurchaseRequest implements RequestInterface
         Validator::validateOrderId($this->getOrderId());
     }
 
-    public function toXmlString(Setting $setting)
+    public function toXmlString(Setting $setting, bool $maskCardData = false)
     {
         $this->validate();
 
@@ -234,9 +234,9 @@ class PurchaseRequest implements RequestInterface
                 "EmailAddress" => $this->getEmail(),
             ),
             "Card" => array(
-                "Number" => $card->getCreditCardNumber(),
-                "ExpireDate" => $card->getExpireDate(),
-                "CVV2" => $card->getCvv(),
+                "Number" => $card->getCreditCardNumber($maskCardData),
+                "ExpireDate" => $card->getExpireDate($maskCardData),
+                "CVV2" => $card->getCvv($maskCardData),
             ),
             "Order" => array(
                 "OrderID" => $this->getOrderId(),
