@@ -19,6 +19,7 @@ use PaymentGateway\VPosGaranti\Setting\Setting;
 class HttpClient
 {
     private $setting;
+    private $timeout = 20;
 
     /**
      * HttpClient constructor.
@@ -43,7 +44,7 @@ class HttpClient
 
         try {
             $clientResponse = $client->post($url, [
-                'timeout' => 20,
+                'timeout' => $this->timeout,
                 'form_params' => [
                     'data' => $documentString,
                 ]
