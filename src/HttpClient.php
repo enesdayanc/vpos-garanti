@@ -43,6 +43,7 @@ class HttpClient
 
         try {
             $clientResponse = $client->post($url, [
+                'timeout' => 20,
                 'form_params' => [
                     'data' => $documentString,
                 ]
