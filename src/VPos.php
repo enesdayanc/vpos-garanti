@@ -99,4 +99,12 @@ class VPos
     {
         return $threeDResponse->getResponseClass($this->setting);
     }
+
+    /**
+     * @return Setting
+     */
+    public function getSetting(): Setting
+    {
+        return $this->setting;
+    }
 }
