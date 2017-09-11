@@ -9,6 +9,7 @@
 namespace PaymentGateway\VPosGaranti\Helper;
 
 
+use PaymentGateway\VPosGaranti\Constant\BankType;
 use PaymentGateway\VPosGaranti\Constant\Currency;
 use PaymentGateway\VPosGaranti\Constant\RequestType;
 use PaymentGateway\VPosGaranti\Constant\StoreType;
@@ -134,6 +135,13 @@ class Validator
 
         if (!in_array($alpha3, Helper::getConstants(Currency::class))) {
             throw new ValidationException('Invalid Currency', 'INVALID_CURRENCY');
+        }
+    }
+
+    public static function validateBankType($value)
+    {
+        if (!in_array($value, Helper::getConstants(BankType::class))) {
+            throw new ValidationException('Invalid Bank Type', 'INVALID_BANK_TYPE');
         }
     }
 }
