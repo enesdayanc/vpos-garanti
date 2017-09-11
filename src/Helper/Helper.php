@@ -10,9 +10,13 @@ namespace PaymentGateway\VPosGaranti\Helper;
 
 
 use Exception;
+use PaymentGateway\VPosGaranti\Constant\BankType;
 use PaymentGateway\VPosGaranti\Constant\Success;
+use PaymentGateway\VPosGaranti\Exception\NotFoundException;
 use PaymentGateway\VPosGaranti\Exception\ValidationException;
 use PaymentGateway\VPosGaranti\Response\Response;
+use PaymentGateway\VPosGaranti\Setting\GarantiBankasi;
+use PaymentGateway\VPosGaranti\Setting\GarantiBankasiTest;
 use PaymentGateway\VPosGaranti\Setting\Setting;
 use ReflectionClass;
 use SimpleXMLElement;
@@ -118,5 +122,28 @@ class Helper
             $credential->getProvisionPassword(),
             $credential->getTerminalId()
         );
+    }
+
+    public static function getSettingClassByBankTypeAndStoreType($bankType, $storeType)
+    {
+        Validator::validateBankType($bankType);
+        Validator::validateStoreType($storeType);
+
+        switch ($bankType) {
+            case BankType::GARANTI_BANKASI:
+                $setting = new GarantiBankasi();
+                break;
+            case BankType::GARANTI_BANKASI_TEST:
+                $setting = new GarantiBankasiTest($storeType);
+                break;
+        }
+
+        if (!isset($setting) || !$setting instanceof Setting) {
+            $userMessage = $bankType . ' not found';
+            $internalMessage = 'BANK_TYPE_NOT_FOUND';
+            throw new NotFoundException($userMessage, $internalMessage);
+        }
+
+        return $setting;
     }
 }
