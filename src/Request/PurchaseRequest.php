@@ -306,6 +306,9 @@ class PurchaseRequest implements RequestInterface
             "customeremailaddress" => $this->getEmail(),
             "customeripaddress" => $this->getIp(),
             "secure3dhash" => $this->getHashDataFor3D($setting),
+            "userid" => $this->getUserId(),
+            "userip" => $this->getIp(),
+            "useremail" => $this->getEmail(),
         );
 
         $redirectForm = new RedirectForm();
