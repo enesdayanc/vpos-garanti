@@ -252,8 +252,6 @@ class ThreeDRequest implements RequestInterface
         Validator::validateCurrency($this->getCurrency());
         Validator::validateInstallment($this->getInstallment());
         Validator::validateNotEmpty('XID', $this->getXid());
-        Validator::validateNotEmpty('ECI', $this->getEci());
-        Validator::validateNotEmpty('CAVV', $this->getCavv());
         Validator::validateNotEmpty('MD', $this->getMd());
     }
 
