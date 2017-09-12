@@ -283,7 +283,6 @@ class ThreeDRequest implements RequestInterface
             "Transaction" => array(
                 "Type" => $this->getType(),
                 "Amount" => $this->getAmount(),
-                "InstallmentCnt" => $this->getInstallment(),
                 "CurrencyCode" => $this->getCurrency()->getNumeric(),
                 "CardholderPresentCode" => CardholderPresentCode::THREE_D,
                 "Secure3D" => array(
@@ -294,6 +293,10 @@ class ThreeDRequest implements RequestInterface
                 ),
             ),
         );
+
+        if ($this->getInstallment() > 1) {
+            $elements["Transaction"]["InstallmentCnt"] = $this->getInstallment();
+        }
 
         return Helper::arrayToXmlString($elements);
     }

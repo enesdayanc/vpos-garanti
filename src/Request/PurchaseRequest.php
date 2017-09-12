@@ -244,11 +244,14 @@ class PurchaseRequest implements RequestInterface
             "Transaction" => array(
                 "Type" => $this->getType(),
                 "Amount" => Helper::amountParser($this->getAmount()),
-                "InstallmentCnt" => $this->getInstallment(),
                 "CurrencyCode" => $this->getCurrency()->getNumeric(),
                 "CardholderPresentCode" => CardholderPresentCode::NORMAL,
             ),
         );
+
+        if ($this->getInstallment() > 1) {
+            $elements["Transaction"]["InstallmentCnt"] = $this->getInstallment();
+        }
 
         return Helper::arrayToXmlString($elements);
     }
