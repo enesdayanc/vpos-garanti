@@ -189,7 +189,7 @@ class Helper
         $threeDResponse->setHashParamsVal(self::getValueFromArray($request, 'hashparamsval'));
         $threeDResponse->setType(self::getValueFromArray($request, 'txntype'));
         $threeDResponse->setAmount(self::getValueFromArray($request, 'txnamount'));
-        $threeDResponse->setInstallment(self::getValueFromArray($request, 'txninstallmentcount'));
+        $threeDResponse->setInstallment((int)self::getValueFromArray($request, 'txninstallmentcount'));
         $threeDResponse->setCurrency($iso4217->getByCode(self::getValueFromArray($request, 'txncurrencycode')));
         $threeDResponse->setXid(self::getValueFromArray($request, 'xid'));
         $threeDResponse->setVersion(self::getValueFromArray($request, 'version'));
