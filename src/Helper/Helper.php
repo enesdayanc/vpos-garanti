@@ -10,10 +10,12 @@ namespace PaymentGateway\VPosGaranti\Helper;
 
 
 use Exception;
+use PaymentGateway\ISO4217\ISO4217;
 use PaymentGateway\VPosGaranti\Constant\BankType;
 use PaymentGateway\VPosGaranti\Constant\Success;
 use PaymentGateway\VPosGaranti\Exception\NotFoundException;
 use PaymentGateway\VPosGaranti\Exception\ValidationException;
+use PaymentGateway\VPosGaranti\Model\ThreeDResponse;
 use PaymentGateway\VPosGaranti\Response\Response;
 use PaymentGateway\VPosGaranti\Setting\GarantiBankasi;
 use PaymentGateway\VPosGaranti\Setting\GarantiBankasiTest;
@@ -150,5 +152,51 @@ class Helper
     public static function maskValue($value, $takeStart = 0, $takeStop = 0, $maskingCharacter = '*')
     {
         return substr($value, $takeStart, $takeStop) . str_repeat($maskingCharacter, strlen($value) - ($takeStop - $takeStart));
+    }
+
+    public static function getValueFromArray(array $array, $key, $default = null)
+    {
+        if (array_key_exists($key, $array)) {
+            return $array[$key];
+        }
+
+        return $default;
+    }
+
+    /**
+     * @param array $request
+     * @return ThreeDResponse
+     */
+    public static function getThreeDResponseFromRequest(array $request)
+    {
+        $iso4217 = new ISO4217();
+
+        $threeDResponse = new ThreeDResponse();
+
+        $threeDResponse->setTransId(self::getValueFromArray($request, 'transid'));
+        $threeDResponse->setClientId(self::getValueFromArray($request, 'clientid'));
+        $threeDResponse->setOrderId(self::getValueFromArray($request, 'orderid'));
+        $threeDResponse->setAuthCode(self::getValueFromArray($request, 'authcode'));
+        $threeDResponse->setProcReturnCode(self::getValueFromArray($request, 'procreturncode'));
+        $threeDResponse->setResponse(self::getValueFromArray($request, 'response'));
+        $threeDResponse->setMdStatus(self::getValueFromArray($request, 'mdstatus'));
+        $threeDResponse->setCavv(self::getValueFromArray($request, 'cavv'));
+        $threeDResponse->setEci(self::getValueFromArray($request, 'eci'));
+        $threeDResponse->setMd(self::getValueFromArray($request, 'md'));
+        $threeDResponse->setRnd(self::getValueFromArray($request, 'rnd'));
+        $threeDResponse->setHash(self::getValueFromArray($request, 'hash'));
+        $threeDResponse->setHashParams(self::getValueFromArray($request, 'hashparams'));
+        $threeDResponse->setHashParamsVal(self::getValueFromArray($request, 'hashparamsval'));
+        $threeDResponse->setType(self::getValueFromArray($request, 'txntype'));
+        $threeDResponse->setAmount(self::getValueFromArray($request, 'txnamount'));
+        $threeDResponse->setInstallment(self::getValueFromArray($request, 'txninstallmentcount'));
+        $threeDResponse->setCurrency($iso4217->getByCode(self::getValueFromArray($request, 'txncurrencycode')));
+        $threeDResponse->setXid(self::getValueFromArray($request, 'xid'));
+        $threeDResponse->setVersion(self::getValueFromArray($request, 'version'));
+        $threeDResponse->setUserIp(self::getValueFromArray($request, 'userip'));
+        $threeDResponse->setUserEmail(self::getValueFromArray($request, 'useremail'));
+        $threeDResponse->setUserId(self::getValueFromArray($request, 'userid'));
+
+        return $threeDResponse;
     }
 }
