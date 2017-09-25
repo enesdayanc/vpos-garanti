@@ -406,7 +406,7 @@ class VposTest extends TestCase
         $threeDResponse->setVersion('2.0');
         $threeDResponse->setUserId('0a5bfc66175d43b15e6c8a81bc0ca89d');
 
-        $response = $this->vPos->handle3DResponse($threeDResponse);
+        $response = $this->vPos->handle3DResponse($threeDResponse, 'MOd9edcf9207c65a1f587748445060e774');
 
         $this->assertInstanceOf(Response::class, $response);
         $this->assertFalse($response->isSuccessful());
