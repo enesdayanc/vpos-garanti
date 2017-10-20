@@ -144,7 +144,7 @@ class RefundRequest implements RequestInterface
         Validator::validateAmount($this->getAmount());
         Validator::validateUserId($this->getUserId());
         Validator::validateIp($this->getIp());
-        Validator::validateNotEmpty('Transaction Reference', $this->getTransactionReference());
+        Validator::validateRefundTransactionReference($this->getTransactionReference());
         Validator::validateCurrency($this->getCurrency());
     }
 
@@ -173,10 +173,13 @@ class RefundRequest implements RequestInterface
             "Transaction" => array(
                 "Type" => $this->getType(),
                 "Amount" => Helper::amountParser($this->getAmount()),
-                "OriginalRetrefNum" => $this->getTransactionReference(),
                 "CurrencyCode" => $this->getCurrency()->getNumeric()
             ),
         );
+
+        if (!empty($this->getTransactionReference())) {
+            $elements["Transaction"]["OriginalRetrefNum"] = $this->getTransactionReference();
+        }
 
         return Helper::arrayToXmlString($elements);
     }

@@ -144,4 +144,12 @@ class Validator
             throw new ValidationException('Invalid Bank Type', 'INVALID_BANK_TYPE');
         }
     }
+
+    public static function validateRefundTransactionReference($value)
+    {
+        if (!empty($value) && (strlen($value) != 12 || intval($value) <= 0)) {
+            throw new ValidationException('Invalid Refund Transaction Reference',
+                'INVALID_REFUND_TRANSACTION_REFERENCE');
+        }
+    }
 }
