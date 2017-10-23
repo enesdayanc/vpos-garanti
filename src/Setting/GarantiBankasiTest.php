@@ -24,6 +24,8 @@ class GarantiBankasiTest extends Setting
 
         if ($storeType == StoreType::THREE_D) {
             $credential->setTerminalId('30691297');
+        } elseif ($storeType == StoreType::THREE_D_PAY) {
+            $credential->setTerminalId('30691298');
         } else {
             throw new NotFoundException('Terminal id not found for store type: ' . $storeType, 'TERMINAL_ID_NOT_FOUND');
         }
