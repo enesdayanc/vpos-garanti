@@ -12,6 +12,7 @@ namespace PaymentGateway\VPosGaranti\Model;
 use PaymentGateway\ISO4217\Model\Currency;
 use PaymentGateway\VPosGaranti\Constant\MdStatus;
 use PaymentGateway\VPosGaranti\Constant\StoreType;
+use PaymentGateway\VPosGaranti\Constant\Success;
 use PaymentGateway\VPosGaranti\Exception\ValidationException;
 use PaymentGateway\VPosGaranti\HttpClient;
 use PaymentGateway\VPosGaranti\Request\ThreeDRequest;
@@ -75,6 +76,8 @@ class ThreeDResponse
             if (in_array($this->getMdStatus(), $this->allowedMdStatus)) {
                 if ($setting->getStoreType() == StoreType::THREE_D) {
                     $responseClass = $this->getResponseClassFor3DModel($setting);
+                } elseif ($setting->getStoreType() == StoreType::THREE_D_PAY) {
+                    $responseClass = $this->getResponseClass3DPayModel($setting);
                 } else {
                     throw new ValidationException('Invalid store type' . $setting->getStoreType(), 'INVALID_STORE_TYPE');
                 }
@@ -86,6 +89,25 @@ class ThreeDResponse
         return $responseClass;
     }
 
+    /**
+     * @param Setting $setting
+     * @return Response
+     */
+    private function getResponseClass3DPayModel(Setting $setting)
+    {
+        $responseClass = new Response();
+
+        $responseClass->setCode($this->getAuthCode());
+        $responseClass->setTransactionReference($this->getTransId());
+
+        if ($this->getProcReturnCode() === Success::RESPONSE_CODE) {
+            $responseClass->setSuccessful(true);
+        } else {
+            $responseClass->setSuccessful(false);
+        }
+
+        return $responseClass;
+    }
 
     private function isValidSignature(Setting $setting)
     {
