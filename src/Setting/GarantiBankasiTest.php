@@ -32,8 +32,8 @@ class GarantiBankasiTest extends Setting
 
         $credential->setMerchantId('7000679');
         $credential->setStoreKey('12345678');
-        $credential->setProvisionPassword('123qweASD');
-        $credential->setRefundProvisionPassword('123qweASD');
+        $credential->setProvisionPassword('123qweASD/');
+        $credential->setRefundProvisionPassword('123qweASD/');
 
 
         parent::setCredential($credential);
