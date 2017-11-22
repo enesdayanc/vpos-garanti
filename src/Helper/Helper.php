@@ -19,6 +19,7 @@ use PaymentGateway\VPosGaranti\Model\ThreeDResponse;
 use PaymentGateway\VPosGaranti\Response\Response;
 use PaymentGateway\VPosGaranti\Setting\GarantiBankasi;
 use PaymentGateway\VPosGaranti\Setting\GarantiBankasiTest;
+use PaymentGateway\VPosGaranti\Setting\MockBank;
 use PaymentGateway\VPosGaranti\Setting\Setting;
 use ReflectionClass;
 use SimpleXMLElement;
@@ -137,6 +138,9 @@ class Helper
                 break;
             case BankType::GARANTI_BANKASI_TEST:
                 $setting = new GarantiBankasiTest($storeType);
+                break;
+            case BankType::MOCKBANK:
+                $setting = new MockBank();
                 break;
         }
 

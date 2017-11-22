@@ -13,4 +13,5 @@ class BankType
 {
     const GARANTI_BANKASI = 'GARANTI_BANKASI';
     const GARANTI_BANKASI_TEST = 'GARANTI_BANKASI_TEST';
+    const MOCKBANK = 'MOCKBANK';
 }
