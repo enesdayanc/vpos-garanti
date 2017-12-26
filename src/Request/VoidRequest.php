@@ -175,7 +175,7 @@ class VoidRequest implements RequestInterface
                 $credential->getTerminalId(),
                 Helper::amountParser($this->getAmount()),
             ),
-            $credential->getProvisionPassword(),
+            $credential->getRefundProvisionPassword(),
             $credential->getTerminalId()
         );
     }
