@@ -100,15 +100,15 @@ abstract class Setting
         }
     }
 
-    public abstract function getThreeDPostUrl();
+    abstract public function getThreeDPostUrl();
 
-    public abstract function getAuthorizeUrl();
+    abstract public function getAuthorizeUrl();
 
-    public abstract function getCaptureUrl();
+    abstract public function getCaptureUrl();
 
-    public abstract function getPurchaseUrl();
+    abstract public function getPurchaseUrl();
 
-    public abstract function getRefundUrl();
+    abstract public function getRefundUrl();
 
-    public abstract function getVoidUrl();
+    abstract public function getVoidUrl();
 }

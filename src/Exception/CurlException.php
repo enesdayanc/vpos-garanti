@@ -10,5 +10,4 @@ namespace PaymentGateway\VPosGaranti\Exception;
 
 class CurlException extends BaseException
 {
-
 }

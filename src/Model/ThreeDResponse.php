@@ -72,7 +72,6 @@ class ThreeDResponse
         if ($this->getOrderId() != $orderId) {
             $responseClass->setErrorMessage('Order id not match');
         } elseif ($validSignature) {
-
             if (in_array($this->getMdStatus(), $this->allowedMdStatus)) {
                 if ($setting->getStoreType() == StoreType::THREE_D) {
                     $responseClass = $this->getResponseClassFor3DModel($setting);
