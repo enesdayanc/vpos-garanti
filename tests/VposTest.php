@@ -52,10 +52,10 @@ class VposTest extends TestCase
         $this->vPos = new VPos($settings);
 
         $card = new Card();
-        $card->setCreditCardNumber("4282209027132016");
-        $card->setExpiryMonth('05');
-        $card->setExpiryYear('18');
-        $card->setCvv('358');
+        $card->setCreditCardNumber("4508034508034509");
+        $card->setExpiryMonth('12');
+        $card->setExpiryYear('21');
+        $card->setCvv('000');
         $card->setFirstName('Enes');
         $card->setLastName('Dayanç');
 
@@ -63,8 +63,8 @@ class VposTest extends TestCase
 
         $threeDCard = new Card();
         $threeDCard->setCreditCardNumber("4282209004348015");
-        $threeDCard->setExpiryMonth('07');
-        $threeDCard->setExpiryYear('19');
+        $threeDCard->setExpiryMonth('12');
+        $threeDCard->setExpiryYear('22');
         $threeDCard->setCvv('123');
         $threeDCard->setFirstName('Enes');
         $threeDCard->setLastName('Dayanç');
@@ -76,9 +76,9 @@ class VposTest extends TestCase
         $this->currency = $iso4217->getByCode('TRY');
 
         $this->amount = rand(1, 100);
-        $this->orderId = 'MO' . md5(microtime() . rand());
+        $this->orderId = 'VPOS' . md5(microtime() . rand());
         $this->userId = md5(microtime() . rand());
-        $this->installment = rand(1, 3);
+        $this->installment = 1;
         $this->userIp = '192.168.1.1';
 
     }
